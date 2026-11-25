@@ -40,6 +40,7 @@ button.b.s{background:#fde68a;color:#78350f}
 <label for="nm">اسم صاحب الشهادة</label>
 <input id="nm" maxlength="24" placeholder="مثلاً: أحمد" autocomplete="off">
 <label>اللقب</label>
+<input id="ts" placeholder="🔎 دوّر على لقب (مثلاً: نوم)" style="margin-bottom:8px">
 <div class="chips" id="titles"></div>
 <label for="ct">أو اكتب لقب من عندك</label>
 <input id="ct" maxlength="30" placeholder="مثلاً: أمير الصحوبية">
@@ -156,7 +157,7 @@ var TH=[
 ],th=0;
 var KD=[["شهادة تقدير","تُمنح بكل فخر وبدون أي مراجعة إلى","وذلك لحصوله على لقب"],["شهادة عيد ميلاد","بمناسبة عيد ميلاده السعيد، تُمنح إلى","وذلك بعد نجاحه في إكمال سنة جديدة بلقب"],["شهادة نجاح","نهنئ من القلب ونمنح بكل فخر إلى","وذلك لنجاحه الباهر وحصوله على لقب"],["شهادة شكر","نتقدم بخالص الشكر والعرفان إلى","وذلك لجهوده الجبارة وحصوله على لقب"],["شهادة تخرج","بعد سنين من السهر والمعاناة، يُهنَّأ","وذلك لتخرجه أخيراً وحصوله على لقب"],["شهادة صداقة","تقديراً لوقفته الجدعة، تُمنح إلى","وذلك لأنه صاحب بجد وحاصل على لقب"],["شهادة صبر","على صبره الجميل علينا، تُمنح إلى","وذلك لتحمله ما لا يُحتمل بلقب"],["شهادة مجاملة","بدون مجاملة (والله)، تُمنح إلى","وذلك لأنه يستحقها فعلاً بلقب"],["شهادة رمضان","بمناسبة الشهر الكريم، تُمنح إلى","وذلك لصيامه وحصوله على لقب"],["شهادة موظف الشهر","لتميزه في الشغل (وفي الشاي)، تُمنح إلى","وذلك لتميزه وحصوله على لقب"],["شهادة اعتذار","نعتذر بكل صدق، ونمنح إلى","وذلك تعويضاً عن موقف بلقب"],["شهادة شجاعة","لشجاعته في وقت الشدة، تُمنح إلى","وذلك لأنه واجه الموقف بلقب"],["شهادة مبروك","ألف مبروك، ونمنح بكل سعادة إلى","وذلك بمناسبة الفرحة بلقب"],["شهادة زمالة","تقديراً للزمالة الجميلة، تُمنح إلى","وذلك لأنه أحسن زميل بلقب"],["شهادة براءة","بعد التحقيق الدقيق، تثبت براءة","وذلك لأنه بريء بلقب"],["شهادة سهر","بعد ليالي السهر الطويلة، تُمنح إلى","وذلك لأنه ما نامش بلقب"]],kd=0,PH=null;
 var FN=[["حديث","system-ui,-apple-system,'Segoe UI',Tahoma,Arial,sans-serif"],["كلاسيك","'Amiri','Traditional Arabic','Times New Roman',Georgia,serif"]],fo=0,BL=[];
-var BS=["كلاسيك","منقّط","مزخرف"],bs=0,PT=["سادة","نقاط","خطوط","نجوم","دوائر","شبكة"],pt=0;
+var BS=["كلاسيك","منقّط","مزخرف","ملكي","شرفات"],bs=0,PT=["سادة","نقاط","خطوط","نجوم","دوائر","شبكة"],pt=0;
 var SE=["معتمد","🏆","👑","😂","🔥","⭐","🎓","💎","🌹","🚀","🍕","⚡","🌙","🎂","🦁","👏","🥇"],se=0,SZ=[["بوست",1350],["ستوري",1920]],sz=0;
 var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),sel=0;
 function $(i){return document.getElementById(i)}
@@ -179,6 +180,7 @@ $("bk").onclick=function(){var ns=$("bulk").value.split(/\n|،|,/).map(function(
   cl.onclick=function(){var keep=[$("nm").value,$("ct").value,sel],out=BL.map(function(p){$("nm").value=p[0];$("ct").value="";sel=p[1];return p[0]+" ← "+T[p[1]][0]+"\n"+mkLink()});$("nm").value=keep[0];$("ct").value=keep[1];sel=keep[2];draw();var t="🏆 شهادات الشلة:\n\n"+out.join("\n\n");if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast("اتنسخت لينكات "+BL.length+" ✔")},function(){toast("انسخها يدوي")});else toast("انسخها يدوي")};
   cp.onclick=function(){var t="🏆 ألقاب الشلة:\n"+BL.map(function(p){return p[0]+" ← "+T[p[1]][0]}).join("\n")+"\n\nاعمل شهادتك: "+location.href.split("#")[0];if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast("اتنسخت ✔")},function(){toast("انسخها يدوي")});else toast("انسخها يدوي")};
   toast("دوس على اسم يطلعلك شهادته")};
+$("ts").oninput=function(){var q=this.value.trim();[].forEach.call($("titles").children,function(c,i){c.style.display=(!q||(T[i][0]+" "+T[i][1]).indexOf(q)>=0)?"":"none"})};
 var bx=$("bsx"),px=$("ptx");
 BS.forEach(function(t,i){var b=document.createElement("button");b.className="chip"+(i===0?" on":"");b.textContent=t;b.onclick=function(){bs=i;setOn(bx,i);draw()};bx.appendChild(b)});
 PT.forEach(function(t,i){var b=document.createElement("button");b.className="chip"+(i===0?" on":"");b.textContent=t;b.onclick=function(){pt=i;setOn(px,i);draw()};px.appendChild(b)});
@@ -211,6 +213,8 @@ function draw(){try{savePrefs()}catch(e){}
   ctx.strokeRect(40,40,W-80,H-80);ctx.setLineDash([]);
   ctx.lineWidth=3;ctx.strokeRect(68,68,W-136,H-136);
   if(bs===2){ctx.lineWidth=2;ctx.strokeRect(86,86,W-172,H-172);ctx.fillStyle=C.bd;ctx.font="46px sans-serif";[[100,118],[W-100,118],[100,H-84],[W-100,H-84]].forEach(function(p){ctx.fillText("✦",p[0],p[1])})}
+  if(bs===3){ctx.lineWidth=8;ctx.strokeRect(100,100,W-200,H-200);ctx.fillStyle=C.bd;[[100,100],[W-100,100],[100,H-100],[W-100,H-100]].forEach(function(p){ctx.fillRect(p[0]-22,p[1]-22,44,44)})}
+  if(bs===4){ctx.fillStyle=C.bd;for(var sx=110;sx<W-100;sx+=44){[100,H-122].forEach(function(yy){ctx.beginPath();ctx.arc(sx,yy,10,0,Math.PI*2);ctx.fill()})}for(var sy=140;sy<H-120;sy+=44){[100,W-100].forEach(function(xx){ctx.beginPath();ctx.arc(xx,sy,10,0,Math.PI*2);ctx.fill()})}}
   ctx.fillStyle=C.bd;[[68,68],[W-68,68],[68,H-68],[W-68,H-68]].forEach(function(p){ctx.beginPath();ctx.arc(p[0],p[1],14,0,Math.PI*2);ctx.fill()});
   var F=FN[fo][1];
   ctx.save();ctx.translate(0,(H-1350)/2);
