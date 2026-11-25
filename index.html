@@ -52,14 +52,14 @@ button.b.s{background:#fde68a;color:#78350f}
 <input type="file" id="ph" accept="image/*" style="padding:8px">
 <label>الختم</label>
 <div class="chips" id="seals"></div>
-<h2>شكل الختم</h2><div class="chips" id="shp"></div>
-<h2>عنوان مخصص (اختياري)</h2><input id="ch" maxlength="22" placeholder="مثلاً: شهادة أسطورة العيلة">
-<h2>التاريخ (اختياري)</h2><input id="dt" maxlength="22" placeholder="سيبه فاضي ونكتب تاريخ النهارده">
-<h2>الإمضاء (اختياري)</h2><input id="sg" maxlength="16" placeholder="مثلاً: المدير العام">
+<label>شكل الختم</label><div class="chips" id="shp"></div>
+<label>عنوان مخصص (اختياري)</label><input id="ch" maxlength="22" placeholder="مثلاً: شهادة أسطورة العيلة">
+<label>التاريخ (اختياري)</label><input id="dt" maxlength="22" placeholder="سيبه فاضي ونكتب تاريخ النهارده">
+<label>الإمضاء (اختياري)</label><input id="sg" maxlength="16" placeholder="مثلاً: المدير العام">
 <label style="display:flex;gap:8px;align-items:center;margin:10px 0"><input type="checkbox" id="nsr" style="width:20px;height:20px"> بدون رقم الشهادة</label>
-<h2>شكل الإطار</h2><div class="chips" id="bsx"></div>
-<h2>الخلفية</h2><div class="chips" id="ptx"></div>
-<h2>الخط</h2><div class="chips" id="fonts"></div>
+<label>شكل الإطار</label><div class="chips" id="bsx"></div>
+<label>الخلفية</label><div class="chips" id="ptx"></div>
+<label>الخط</label><div class="chips" id="fonts"></div>
 <label>المقاس</label>
 <div class="chips" id="sizes"></div>
 <label for="bulk">شهادات للشلة كلها (اسم في كل سطر)</label>
@@ -72,6 +72,7 @@ button.b.s{background:#fde68a;color:#78350f}
 <input id="note" maxlength="60" placeholder="سيبه فاضي وهنكتب جملة ظريفة">
 <canvas id="cv" width="1080" height="1350"></canvas>
 <button class="b g" id="share">ابعت الشهادة 📤</button>
+<div id="hist"></div>
 <button class="b" id="dl">نزّل الصورة</button>
 <button class="b" id="lk" style="background:#0ea5e9">انسخ لينك الشهادة 🔗</button>
 <button class="b s" id="rnn" style="background:#0ea5e9;color:#fff">جملة ظريفة عشوائية 💬</button>
@@ -129,7 +130,7 @@ var T=[
 ["خبير التأخير","عمره ما وصل في معاده، بس دايماً عنده عذر جديد"],
 ["مستشار الواتساب","بيقرا الرسالة ويرد بعد يومين بـ «معلش مشغول»"],
 ["أمير النوم","بينام في المواصلات والسينما والعزومات"],
-["قائد الرحلات","بيخطط لكل رحلة وبعدين محدش بيلتزم"],
+["منظم الرحلات","بيخطط لكل رحلة وبعدين محدش بيلتزم"],
 ["دكتور الميمز","بيبعت ميم مناسب لأي موقف في ثانية"],
 ["حكيم الشلة","كل مشكلة عنده حل، إلا مشكلته هو"],
 ["سفير النية الطيبة","بيقول «هاجي» ومعاه ١٠٪ نية"],
@@ -241,15 +242,19 @@ function draw(){try{savePrefs()}catch(e){}
 }
 ["nm","fr","note","ct","ch","dt","sg"].forEach(function(i){$(i).oninput=draw});$("nsr").onchange=draw;
 function blob(cb){cv.toBlob(cb,"image/png")}
-$("dl").onclick=function(){blob(function(b){var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="shahada.png";document.body.appendChild(a);a.click();a.remove();toast("اتنزلت ✔")})};
-$("share").onclick=function(){blob(function(b){
+var HK="shahada_hist";
+function addHist(){try{var n=$("nm").value.trim();if(!n)return;var l=mkLink().split("#")[1],h=JSON.parse(localStorage.getItem(HK)||"[]").filter(function(x){return x.l!==l});h.unshift({n:n,t:$("ct").value.trim()||T[sel][0],l:l});localStorage.setItem(HK,JSON.stringify(h.slice(0,8)));showHist()}catch(e){}}
+function showHist(){var b=$("hist"),h=[];try{h=JSON.parse(localStorage.getItem(HK)||"[]")}catch(e){}b.innerHTML="";if(!h.length)return;var t=document.createElement("label");t.textContent="🕘 آخر شهاداتك (دوس تفتحها تاني)";b.appendChild(t);h.forEach(function(x){var c=document.createElement("button");c.className="chip";c.style.cssText="display:block;width:100%;margin-top:6px;text-align:right";c.textContent=x.n+" ← "+x.t;c.onclick=function(){location.hash=x.l;window.scrollTo({top:0,behavior:"smooth"})};b.appendChild(c)});var cl=document.createElement("button");cl.className="chip";cl.style.cssText="margin-top:8px";cl.textContent="مسح السجل";cl.onclick=function(){try{localStorage.removeItem(HK)}catch(e){}showHist()};b.appendChild(cl)}
+showHist();
+$("dl").onclick=function(){addHist();blob(function(b){var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="shahada.png";document.body.appendChild(a);a.click();a.remove();toast("اتنزلت ✔")})};
+$("share").onclick=function(){addHist();blob(function(b){
   var f=new File([b],"shahada.png",{type:"image/png"});
   if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],text:"عملتلك شهادة 😂 اعمل واحدة لصحابك: "+location.href.split("#")[0]}).catch(function(){})}
   else{$("dl").click();window.open("https://wa.me/?text="+encodeURIComponent("عملتلك شهادة 😂 اعمل واحدة لصحابك: "+location.href.split("#")[0]),"_blank")}
 })};
 $("rnd").onclick=function(){$("ct").value="";sel=Math.floor(Math.random()*T.length);[].forEach.call(box.children,function(c,k){c.classList.toggle("on",k===sel)});draw()};
 function mkLink(){var p=[];var n=$("nm").value.trim(),c=$("ct").value.trim(),f=$("fr").value.trim(),no=$("note").value.trim();if(n)p.push("n="+encodeURIComponent(n));if(c)p.push("c="+encodeURIComponent(c));else p.push("t="+sel);if(f)p.push("f="+encodeURIComponent(f));if(no)p.push("m="+encodeURIComponent(no));p.push("s="+th);if(kd)p.push("k="+kd);if(se)p.push("e="+se);if(sh)p.push("j="+sh);if(sz)p.push("z="+sz);if(fo)p.push("y="+fo);var dd=$("dt").value.trim();if(dd)p.push("d="+encodeURIComponent(dd));if($("nsr").checked)p.push("x=1");var gg=$("sg").value.trim();if(gg)p.push("g="+encodeURIComponent(gg));var hh=$("ch").value.trim();if(hh)p.push("h="+encodeURIComponent(hh));if(bs)p.push("b="+bs);if(pt)p.push("p="+pt);return location.href.split("#")[0]+"#"+p.join("&")}
-$("lk").onclick=function(){var l=mkLink(),t="عملتلك شهادة 😂 افتح اللينك: "+l;if(navigator.share){navigator.share({text:t}).catch(function(){})}else if(navigator.clipboard){navigator.clipboard.writeText(l).then(function(){toast("اتنسخ اللينك ✔")})}else window.open("https://wa.me/?text="+encodeURIComponent(t))};
+$("lk").onclick=function(){addHist();var l=mkLink(),t="عملتلك شهادة 😂 افتح اللينك: "+l;if(navigator.share){navigator.share({text:t}).catch(function(){})}else if(navigator.clipboard){navigator.clipboard.writeText(l).then(function(){toast("اتنسخ اللينك ✔")},function(){toast("انسخ اللينك من شريط العنوان")})}else window.open("https://wa.me/?text="+encodeURIComponent(t))};
 function fromHash(){var h=location.hash.slice(1);if(!h)return;var o={};h.split("&").forEach(function(x){var k=x.split("=");try{o[k[0]]=decodeURIComponent(k[1]||"")}catch(e){}});
   if(o.n)$("nm").value=o.n.slice(0,24);if(o.f)$("fr").value=o.f.slice(0,24);if(o.m)$("note").value=o.m.slice(0,60);if(o.c)$("ct").value=o.c.slice(0,30);
   if(o.t!==undefined&&+o.t>=0&&+o.t<T.length){sel=+o.t;[].forEach.call(box.children,function(c,k){c.classList.toggle("on",k===sel)})}
