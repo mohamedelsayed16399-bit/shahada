@@ -51,6 +51,7 @@ button.b.s{background:#fde68a;color:#78350f}
 <input type="file" id="ph" accept="image/*" style="padding:8px">
 <label>الختم</label>
 <div class="chips" id="seals"></div>
+<h2>عنوان مخصص (اختياري)</h2><input id="ch" maxlength="22" placeholder="مثلاً: شهادة أسطورة العيلة">
 <h2>شكل الإطار</h2><div class="chips" id="bsx"></div>
 <h2>الخلفية</h2><div class="chips" id="ptx"></div>
 <h2>الخط</h2><div class="chips" id="fonts"></div>
@@ -135,7 +136,7 @@ var TH=[
 var KD=[["شهادة تقدير","تُمنح بكل فخر وبدون أي مراجعة إلى","وذلك لحصوله على لقب"],["شهادة عيد ميلاد","بمناسبة عيد ميلاده السعيد، تُمنح إلى","وذلك بعد نجاحه في إكمال سنة جديدة بلقب"],["شهادة نجاح","نهنئ من القلب ونمنح بكل فخر إلى","وذلك لنجاحه الباهر وحصوله على لقب"],["شهادة شكر","نتقدم بخالص الشكر والعرفان إلى","وذلك لجهوده الجبارة وحصوله على لقب"],["شهادة تخرج","بعد سنين من السهر والمعاناة، يُهنَّأ","وذلك لتخرجه أخيراً وحصوله على لقب"],["شهادة صداقة","تقديراً لوقفته الجدعة، تُمنح إلى","وذلك لأنه صاحب بجد وحاصل على لقب"],["شهادة صبر","على صبره الجميل علينا، تُمنح إلى","وذلك لتحمله ما لا يُحتمل بلقب"],["شهادة مجاملة","بدون مجاملة (والله)، تُمنح إلى","وذلك لأنه يستحقها فعلاً بلقب"]],kd=0,PH=null;
 var FN=[["حديث","system-ui,-apple-system,'Segoe UI',Tahoma,Arial,sans-serif"],["كلاسيك","'Amiri','Traditional Arabic','Times New Roman',Georgia,serif"]],fo=0,BL=[];
 var BS=["كلاسيك","منقّط","مزخرف"],bs=0,PT=["سادة","نقاط","خطوط","نجوم"],pt=0;
-var SE=["معتمد","🏆","👑","😂","🔥","⭐"],se=0,SZ=[["بوست",1350],["ستوري",1920]],sz=0;
+var SE=["معتمد","🏆","👑","😂","🔥","⭐","🎓","💎","🌹","🚀","🍕","⚡"],se=0,SZ=[["بوست",1350],["ستوري",1920]],sz=0;
 var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),sel=0;
 function $(i){return document.getElementById(i)}
 function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(function(){e.classList.remove("on")},1800)}
@@ -189,7 +190,7 @@ function draw(){
   var F=FN[fo][1];
   ctx.save();ctx.translate(0,(H-1350)/2);
   var K=KD[kd],hy=PH?170:250,ny=PH?600:540;
-  ctx.fillStyle=C.h;ctx.font="bold "+(PH?80:92)+"px "+F;ctx.fillText(K[0],W/2,hy);
+  ctx.fillStyle=C.h;var hs=PH?80:92,ht=$("ch").value.trim()||K[0];ctx.font="bold "+hs+"px "+F;while(ctx.measureText(ht).width>W-220&&hs>40){hs-=4;ctx.font="bold "+hs+"px "+F}ctx.fillText(ht,W/2,hy);
   if(PH){var R=115,cx=W/2,cy=330;ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.clip();var m=Math.min(PH.width,PH.height),sx=(PH.width-m)/2,sy=(PH.height-m)/2;ctx.drawImage(PH,sx,sy,m,m,cx-R,cy-R,R*2,R*2);ctx.restore();ctx.strokeStyle=C.bd;ctx.lineWidth=10;ctx.beginPath();ctx.arc(cx,cy,R+4,0,Math.PI*2);ctx.stroke()}
   else{ctx.font="52px "+F;ctx.fillStyle=C.sub;ctx.fillText(K[1],W/2,360)}
   ctx.fillStyle=C.txt;var fs=130;ctx.font="bold "+fs+"px "+F;while(ctx.measureText(name).width>W-220&&fs>50){fs-=6;ctx.font="bold "+fs+"px "+F}
@@ -205,7 +206,7 @@ function draw(){
   if(from){ctx.fillStyle=C.h;ctx.font="44px "+F;ctx.fillText("من: "+from,W/2,1235)}
   ctx.fillStyle=C.sub;ctx.globalAlpha=.8;ctx.font="26px "+F;ctx.fillText("mohamedelsayed16399-bit.github.io/shahada",W/2,1282);ctx.globalAlpha=1;ctx.restore();
 }
-["nm","fr","note","ct"].forEach(function(i){$(i).oninput=draw});
+["nm","fr","note","ct","ch"].forEach(function(i){$(i).oninput=draw});
 function blob(cb){cv.toBlob(cb,"image/png")}
 $("dl").onclick=function(){blob(function(b){var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="shahada.png";document.body.appendChild(a);a.click();a.remove();toast("اتنزلت ✔")})};
 $("share").onclick=function(){blob(function(b){
@@ -214,7 +215,7 @@ $("share").onclick=function(){blob(function(b){
   else{$("dl").click();window.open("https://wa.me/?text="+encodeURIComponent("عملتلك شهادة 😂 اعمل واحدة لصحابك: "+location.href.split("#")[0]),"_blank")}
 })};
 $("rnd").onclick=function(){$("ct").value="";sel=Math.floor(Math.random()*T.length);[].forEach.call(box.children,function(c,k){c.classList.toggle("on",k===sel)});draw()};
-function mkLink(){var p=[];var n=$("nm").value.trim(),c=$("ct").value.trim(),f=$("fr").value.trim(),no=$("note").value.trim();if(n)p.push("n="+encodeURIComponent(n));if(c)p.push("c="+encodeURIComponent(c));else p.push("t="+sel);if(f)p.push("f="+encodeURIComponent(f));if(no)p.push("m="+encodeURIComponent(no));p.push("s="+th);if(kd)p.push("k="+kd);if(se)p.push("e="+se);if(sz)p.push("z="+sz);if(fo)p.push("y="+fo);if(bs)p.push("b="+bs);if(pt)p.push("p="+pt);return location.href.split("#")[0]+"#"+p.join("&")}
+function mkLink(){var p=[];var n=$("nm").value.trim(),c=$("ct").value.trim(),f=$("fr").value.trim(),no=$("note").value.trim();if(n)p.push("n="+encodeURIComponent(n));if(c)p.push("c="+encodeURIComponent(c));else p.push("t="+sel);if(f)p.push("f="+encodeURIComponent(f));if(no)p.push("m="+encodeURIComponent(no));p.push("s="+th);if(kd)p.push("k="+kd);if(se)p.push("e="+se);if(sz)p.push("z="+sz);if(fo)p.push("y="+fo);var hh=$("ch").value.trim();if(hh)p.push("h="+encodeURIComponent(hh));if(bs)p.push("b="+bs);if(pt)p.push("p="+pt);return location.href.split("#")[0]+"#"+p.join("&")}
 $("lk").onclick=function(){var l=mkLink(),t="عملتلك شهادة 😂 افتح اللينك: "+l;if(navigator.share){navigator.share({text:t}).catch(function(){})}else if(navigator.clipboard){navigator.clipboard.writeText(l).then(function(){toast("اتنسخ اللينك ✔")})}else window.open("https://wa.me/?text="+encodeURIComponent(t))};
 function fromHash(){var h=location.hash.slice(1);if(!h)return;var o={};h.split("&").forEach(function(x){var k=x.split("=");try{o[k[0]]=decodeURIComponent(k[1]||"")}catch(e){}});
   if(o.n)$("nm").value=o.n.slice(0,24);if(o.f)$("fr").value=o.f.slice(0,24);if(o.m)$("note").value=o.m.slice(0,60);if(o.c)$("ct").value=o.c.slice(0,30);
@@ -225,6 +226,7 @@ function fromHash(){var h=location.hash.slice(1);if(!h)return;var o={};h.split("
   if(o.y!==undefined&&+o.y>=0&&+o.y<FN.length){fo=+o.y;setOn(fbox,fo)}
   if(o.b!==undefined&&+o.b>=0&&+o.b<BS.length){bs=+o.b;setOn(bx,bs)}
   if(o.p!==undefined&&+o.p>=0&&+o.p<PT.length){pt=+o.p;setOn(px,pt)}
+  if(o.h)$("ch").value=o.h.slice(0,22);
   if(o.s!==undefined&&+o.s>=0&&+o.s<TH.length){th=+o.s;[].forEach.call(tbox.children,function(c,k){c.classList.toggle("on",k===th)})}}
 window.addEventListener("hashchange",function(){fromHash();draw()});
 fromHash();
