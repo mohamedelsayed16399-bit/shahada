@@ -106,7 +106,19 @@ var T=[
 ["فيلسوف الميكروباص","حلّ مشاكل الدنيا في الطريق من المحطة للمحطة"],
 ["الشحات الرسمي للشاحن","كل مرة بيطلب شاحن وبيقول «هرجعه» ومبيرجعش"],
 ["أسطورة الستوري","كل ساعة ستوري جديدة وكلها مهمة جداً"],
-["صاحب الذاكرة القوية","بيفتكر موقف من 7 سنين ويحكيه في الخروجة"]
+["صاحب الذاكرة القوية","بيفتكر موقف من 7 سنين ويحكيه في الخروجة"],
+["سفير الشاي بالنعناع","مفيش جلسة تكتمل من غير كوباية على إيده"],
+["باشمهندس الحلول","بيقولك «دي بسيطة» وبعدين الدنيا بتبوظ"],
+["ملك الرد المتأخر","بيرد بعد أسبوع وبيبدأ بـ «معلش كنت مشغول»"],
+["أستاذ الأرقام","بيفتكر أرقام موبايلات الكل ومبيفتكرش ميعاد"],
+["مدمن الأوردر","الدليفري عارفه باسمه وعنوانه وصوته"],
+["قائد الرحلات","بيخطط لرحلة كل شهر ومفيش واحدة بتتم"],
+["نابغة الواتساب جروب","كل رسالة عنده فويس 4 دقايق"],
+["خبير النكتة البايخة","بيضحك على نكتته قبل ما يخلصها"],
+["محترف السهر","بينام الفجر وبيصحى بنص قلب"],
+["الجدع الأول","أول واحد يقول «أنا معاك» في أي مصيبة"],
+["كبير الشلة","كلمته بتتسمع، ولو متسمعتش بيعيدها بصوت أعلى"],
+["ملك الصور","بيصور كل حاجة، وأول واحد يطلع وحش في الصورة"]
 ];
 var TH=[
 {n:"ذهبي",bg1:"#fff7e6",bg2:"#fde8b3",bd:"#b45309",h:"#92400e",sub:"#a16207",txt:"#3b2a0a",acc:"#d97706",ti:"#b45309"},
@@ -116,6 +128,9 @@ var TH=[
 
 ,{n:"بنفسجي",bg1:"#faf5ff",bg2:"#e9d5ff",bd:"#7e22ce",h:"#6b21a8",sub:"#7e22ce",txt:"#3b0764",acc:"#9333ea",ti:"#7e22ce"},
 {n:"أزرق",bg1:"#eff6ff",bg2:"#bfdbfe",bd:"#1d4ed8",h:"#1e40af",sub:"#1d4ed8",txt:"#172554",acc:"#2563eb",ti:"#1d4ed8"}
+
+,{n:"برتقالي",bg1:"#fff7ed",bg2:"#fed7aa",bd:"#c2410c",h:"#9a3412",sub:"#c2410c",txt:"#431407",acc:"#ea580c",ti:"#c2410c"},
+{n:"فحمي",bg1:"#18181b",bg2:"#27272a",bd:"#e4e4e7",h:"#fafafa",sub:"#a1a1aa",txt:"#ffffff",acc:"#a78bfa",ti:"#c4b5fd"}
 ],th=0;
 var KD=[["شهادة تقدير","تُمنح بكل فخر وبدون أي مراجعة إلى","وذلك لحصوله على لقب"],["شهادة عيد ميلاد","بمناسبة عيد ميلاده السعيد، تُمنح إلى","وذلك بعد نجاحه في إكمال سنة جديدة بلقب"],["شهادة نجاح","نهنئ من القلب ونمنح بكل فخر إلى","وذلك لنجاحه الباهر وحصوله على لقب"],["شهادة شكر","نتقدم بخالص الشكر والعرفان إلى","وذلك لجهوده الجبارة وحصوله على لقب"],["شهادة تخرج","بعد سنين من السهر والمعاناة، يُهنَّأ","وذلك لتخرجه أخيراً وحصوله على لقب"],["شهادة صداقة","تقديراً لوقفته الجدعة، تُمنح إلى","وذلك لأنه صاحب بجد وحاصل على لقب"],["شهادة صبر","على صبره الجميل علينا، تُمنح إلى","وذلك لتحمله ما لا يُحتمل بلقب"],["شهادة مجاملة","بدون مجاملة (والله)، تُمنح إلى","وذلك لأنه يستحقها فعلاً بلقب"]],kd=0,PH=null;
 var FN=[["حديث","system-ui,-apple-system,'Segoe UI',Tahoma,Arial,sans-serif"],["كلاسيك","'Amiri','Traditional Arabic','Times New Roman',Georgia,serif"]],fo=0,BL=[];
@@ -137,6 +152,8 @@ $("bk").onclick=function(){var ns=$("bulk").value.split(/\n|،|,/).map(function(
   var da=document.createElement("button");da.className="b";da.style.marginTop="10px";da.textContent="نزّل كل الشهادات ("+BL.length+") ⬇️";box.appendChild(da);
   da.onclick=function(){var i=0,keep=[$("nm").value,$("ct").value,sel];da.disabled=true;(function nx(){if(i>=BL.length){$("nm").value=keep[0];$("ct").value=keep[1];sel=keep[2];setOn($("titles"),sel);draw();da.disabled=false;toast("خلصت ✔ نزلت "+BL.length+" شهادة");return}
     var p=BL[i];$("nm").value=p[0];$("ct").value="";sel=p[1];draw();var k=++i;blob(function(b){var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="shahada-"+k+".png";document.body.appendChild(a);a.click();a.remove();setTimeout(nx,500)})})()};
+  var cp=document.createElement("button");cp.className="b s";cp.style.marginTop="8px";cp.textContent="انسخ القايمة للجروب 📋";box.appendChild(cp);
+  cp.onclick=function(){var t="🏆 ألقاب الشلة:\n"+BL.map(function(p){return p[0]+" ← "+T[p[1]][0]}).join("\n")+"\n\nاعمل شهادتك: "+location.href.split("#")[0];if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast("اتنسخت ✔")},function(){toast("انسخها يدوي")});else toast("انسخها يدوي")};
   toast("دوس على اسم يطلعلك شهادته")};
 var bx=$("bsx"),px=$("ptx");
 BS.forEach(function(t,i){var b=document.createElement("button");b.className="chip"+(i===0?" on":"");b.textContent=t;b.onclick=function(){bs=i;setOn(bx,i);draw()};bx.appendChild(b)});
