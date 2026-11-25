@@ -68,6 +68,7 @@ button.b.s{background:#fde68a;color:#78350f}
 <button class="b g" id="share">ابعت الشهادة 📤</button>
 <button class="b" id="dl">نزّل الصورة</button>
 <button class="b" id="lk" style="background:#0ea5e9">انسخ لينك الشهادة 🔗</button>
+<button class="b s" id="rnn" style="background:#0ea5e9;color:#fff">جملة ظريفة عشوائية 💬</button>
 <button class="b s" id="rnd">لقب عشوائي 🎲</button>
 <button class="b s" id="rall" style="background:#a855f7;color:#fff">ورّيني حاجة تانية خالص 🎰</button>
 <div class="foot">الصورة بتتعمل على موبايلك ومفيش حاجة بتتبعت لأي سيرفر</div>
@@ -116,7 +117,7 @@ var TH=[
 ,{n:"بنفسجي",bg1:"#faf5ff",bg2:"#e9d5ff",bd:"#7e22ce",h:"#6b21a8",sub:"#7e22ce",txt:"#3b0764",acc:"#9333ea",ti:"#7e22ce"},
 {n:"أزرق",bg1:"#eff6ff",bg2:"#bfdbfe",bd:"#1d4ed8",h:"#1e40af",sub:"#1d4ed8",txt:"#172554",acc:"#2563eb",ti:"#1d4ed8"}
 ],th=0;
-var KD=[["شهادة تقدير","تُمنح بكل فخر وبدون أي مراجعة إلى","وذلك لحصوله على لقب"],["شهادة عيد ميلاد","بمناسبة عيد ميلاده السعيد، تُمنح إلى","وذلك بعد نجاحه في إكمال سنة جديدة بلقب"],["شهادة نجاح","نهنئ من القلب ونمنح بكل فخر إلى","وذلك لنجاحه الباهر وحصوله على لقب"],["شهادة شكر","نتقدم بخالص الشكر والعرفان إلى","وذلك لجهوده الجبارة وحصوله على لقب"]],kd=0,PH=null;
+var KD=[["شهادة تقدير","تُمنح بكل فخر وبدون أي مراجعة إلى","وذلك لحصوله على لقب"],["شهادة عيد ميلاد","بمناسبة عيد ميلاده السعيد، تُمنح إلى","وذلك بعد نجاحه في إكمال سنة جديدة بلقب"],["شهادة نجاح","نهنئ من القلب ونمنح بكل فخر إلى","وذلك لنجاحه الباهر وحصوله على لقب"],["شهادة شكر","نتقدم بخالص الشكر والعرفان إلى","وذلك لجهوده الجبارة وحصوله على لقب"],["شهادة تخرج","بعد سنين من السهر والمعاناة، يُهنَّأ","وذلك لتخرجه أخيراً وحصوله على لقب"],["شهادة صداقة","تقديراً لوقفته الجدعة، تُمنح إلى","وذلك لأنه صاحب بجد وحاصل على لقب"],["شهادة صبر","على صبره الجميل علينا، تُمنح إلى","وذلك لتحمله ما لا يُحتمل بلقب"],["شهادة مجاملة","بدون مجاملة (والله)، تُمنح إلى","وذلك لأنه يستحقها فعلاً بلقب"]],kd=0,PH=null;
 var FN=[["حديث","system-ui,-apple-system,'Segoe UI',Tahoma,Arial,sans-serif"],["كلاسيك","'Amiri','Traditional Arabic','Times New Roman',Georgia,serif"]],fo=0,BL=[];
 var BS=["كلاسيك","منقّط","مزخرف"],bs=0,PT=["سادة","نقاط","خطوط","نجوم"],pt=0;
 var SE=["معتمد","🏆","👑","😂","🔥","⭐"],se=0,SZ=[["بوست",1350],["ستوري",1920]],sz=0;
@@ -144,6 +145,8 @@ var fbox=$("fonts");
 FN.forEach(function(t,i){var b=document.createElement("button");b.className="chip"+(i===0?" on":"");b.textContent=t[0];b.onclick=function(){fo=i;[].forEach.call(fbox.children,function(c,k){c.classList.toggle("on",k===i)});draw()};fbox.appendChild(b)});
 function setOn(bx,i){[].forEach.call(bx.children,function(c,k){c.classList.toggle("on",k===i)})}
 function R(n){return Math.floor(Math.random()*n)}
+var NT=["معتمدة من الشلة بالإجماع، ومفيش استئناف","اتحسبت بالمسطرة وبالقلب","صادرة من أعلى سلطة في الجروب","ممنوع الاعتراض، القرار نهائي","لو زعلت، ده لقبك وخلاص","موثقة بالصوت والصورة والستيكرز","بتتجدد كل سنة بالمعاناة","بالمصلحة العامة، لقب مستحق","اتصوتت عليها في الجروب وفازت 100%","هدية متواضعة لشخص مش متواضع","وحشتنا يا زعيم، عشان كده الشهادة دي","اللقب ده ملكك ولو الدنيا اتقلبت"];
+$("rnn").onclick=function(){$("note").value=NT[R(NT.length)];draw()};
 $("rall").onclick=function(){bs=R(BS.length);pt=R(PT.length);setOn(bx,bs);setOn(px,pt);$("ct").value="";sel=R(T.length);th=R(TH.length);se=R(SE.length);fo=R(FN.length);setOn(box,sel);setOn(tbox,th);setOn(sbox,se);setOn(fbox,fo);draw()};
 var kbox=$("kinds");
 KD.forEach(function(t,i){var b=document.createElement("button");b.className="chip"+(i===0?" on":"");b.textContent=t[0];b.onclick=function(){kd=i;[].forEach.call(kbox.children,function(c,k){c.classList.toggle("on",k===i)});draw()};kbox.appendChild(b)});
