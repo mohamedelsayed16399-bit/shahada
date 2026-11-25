@@ -39,6 +39,7 @@ button.b.s{background:#fde68a;color:#78350f}
 <p class="sub">اعمل شهادة لصاحبك وابعتها صورة على واتساب</p>
 <label for="nm">اسم صاحب الشهادة</label>
 <input id="nm" maxlength="24" placeholder="مثلاً: أحمد" autocomplete="off">
+<button type="button" class="chip" id="rnd" style="width:100%;margin-bottom:10px;padding:12px;font-size:16px;font-weight:700">🎲 فاجئني (تصميم عشوائي)</button>
 <label>اللقب</label>
 <input id="ts" placeholder="🔎 دوّر على لقب (مثلاً: نوم)" style="margin-bottom:8px">
 <div class="chips" id="titles"></div>
@@ -207,6 +208,7 @@ KD.forEach(function(t,i){var b=document.createElement("button");b.className="chi
 $("ph").onchange=function(){var f=this.files&&this.files[0];if(!f){PH=null;draw();return}var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){PH=im;draw();toast("اتضافت الصورة ✔")};im.onerror=function(){toast("الصورة مش مقروءة")};im.src=r.result};r.readAsDataURL(f)};
 function wrap(text,max){var w=text.split(" "),lines=[],cur="";w.forEach(function(x){var t=cur?cur+" "+x:x;if(ctx.measureText(t).width>max&&cur){lines.push(cur);cur=x}else cur=t});if(cur)lines.push(cur);return lines}
 function serial(n){var h=7;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%90000;return 10000+h}
+$("rnd").onclick=function(){[box,tbox,kbox,bx,px,sbox,shb].forEach(function(c){var k=c.children;if(k.length){var v=k[Math.floor(Math.random()*k.length)];if(c===box)$("ct").value="";v.click()}});toast("🎲 تصميم جديد!")};
 function draw(){try{savePrefs()}catch(e){}
   var W=1080,H=SZ[sz][1],name=$("nm").value.trim()||"اسم صاحبك",from=$("fr").value.trim(),custom=$("ct").value.trim(),note=$("note").value.trim()||(custom?"لقب معتمد من الشلة بالإجماع":T[sel][1]),C=TH[th];
   var tt=custom||T[sel][0];
