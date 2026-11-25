@@ -41,6 +41,10 @@ button.b.s{background:#fde68a;color:#78350f}
 <input id="nm" maxlength="24" placeholder="مثلاً: أحمد" autocomplete="off">
 <label>اللقب</label>
 <div class="chips" id="titles"></div>
+<label for="ct">أو اكتب لقب من عندك</label>
+<input id="ct" maxlength="30" placeholder="مثلاً: أمير الصحوبية">
+<label>الشكل</label>
+<div class="chips" id="themes"></div>
 <label for="fr">من (اسمك، اختياري)</label>
 <input id="fr" maxlength="24" placeholder="اسمك" autocomplete="off">
 <label for="note">كلمة على الشهادة (اختياري)</label>
@@ -48,6 +52,7 @@ button.b.s{background:#fde68a;color:#78350f}
 <canvas id="cv" width="1080" height="1350"></canvas>
 <button class="b g" id="share">ابعت الشهادة 📤</button>
 <button class="b" id="dl">نزّل الصورة</button>
+<button class="b" id="lk" style="background:#0ea5e9">انسخ لينك الشهادة 🔗</button>
 <button class="b s" id="rnd">لقب عشوائي 🎲</button>
 <div class="foot">الصورة بتتعمل على موبايلك ومفيش حاجة بتتبعت لأي سيرفر</div>
 </div>
@@ -64,37 +69,58 @@ var T=[
 ["نجم الشلة","لو مش موجود الخروجة بتبقى مملة"],
 ["سلطان النوم","بينام في أي مكان وأي وقت، وبيصحى يسأل «احنا فين؟»"],
 ["مدير الجروب","بيصدر القرارات ومحدش بيسمعها"],
-["قاهر المذاكرة","بيذاكر ليلة الامتحان وبينجح بإعجاز"]
+["قاهر المذاكرة","بيذاكر ليلة الامتحان وبينجح بإعجاز"],
+["سفير النوايا الحسنة","بيوعد بالخروجة وبيلغيها قبلها بساعة"],
+["خبير القهوة","بيعرف درجة التحميص من الريحة ويطلب نسكافيه"],
+["مهندس الأعذار","عنده عذر جاهز لكل موقف وبيبدع في كل مرة"],
+["الصديق المثالي","بيفتكر عيد ميلادك وبيجيبلك التورتة"],
+["بطل الجيم الوهمي","مشترك في الجيم من 3 سنين وبيروح في الأحلام"],
+["ملك السفرة","بيخلص الأكل قبل ما الكل يقعد"],
+["صاحب الصوت العالي","مفيش حد في الشارع ميعرفوش"],
+["مفتي الجروب","عنده رأي في كل حاجة حتى لو محدش سأل"],
+["نجم الفرح","أول واحد على الدانس وآخر واحد يمشي"],
+["رئيس قسم الرغي","بيتكلم ساعتين في موضوع مدته دقيقة"]
 ];
+var TH=[
+{n:"ذهبي",bg1:"#fff7e6",bg2:"#fde8b3",bd:"#b45309",h:"#92400e",sub:"#a16207",txt:"#3b2a0a",acc:"#d97706",ti:"#b45309"},
+{n:"ليلي",bg1:"#0f172a",bg2:"#1e293b",bd:"#fbbf24",h:"#fbbf24",sub:"#cbd5e1",txt:"#ffffff",acc:"#fbbf24",ti:"#fde68a"},
+{n:"أخضر",bg1:"#ecfdf5",bg2:"#bbf7d0",bd:"#047857",h:"#065f46",sub:"#15803d",txt:"#052e16",acc:"#059669",ti:"#047857"},
+{n:"وردي",bg1:"#fdf2f8",bg2:"#fbcfe8",bd:"#be185d",h:"#9d174d",sub:"#be185d",txt:"#500724",acc:"#db2777",ti:"#be185d"}
+],th=0;
 var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),sel=0;
 function $(i){return document.getElementById(i)}
 function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(function(){e.classList.remove("on")},1800)}
 var box=$("titles");
-T.forEach(function(t,i){var b=document.createElement("button");b.className="chip"+(i===0?" on":"");b.textContent=t[0];b.onclick=function(){sel=i;[].forEach.call(box.children,function(c,k){c.classList.toggle("on",k===i)});draw()};box.appendChild(b)});
+T.forEach(function(t,i){var b=document.createElement("button");b.className="chip"+(i===0?" on":"");b.textContent=t[0];b.onclick=function(){$("ct").value="";sel=i;[].forEach.call(box.children,function(c,k){c.classList.toggle("on",k===i)});draw()};box.appendChild(b)});
+var tbox=$("themes");
+TH.forEach(function(t,i){var b=document.createElement("button");b.className="chip"+(i===0?" on":"");b.textContent=t.n;b.onclick=function(){th=i;[].forEach.call(tbox.children,function(c,k){c.classList.toggle("on",k===i)});draw()};tbox.appendChild(b)});
 function wrap(text,max){var w=text.split(" "),lines=[],cur="";w.forEach(function(x){var t=cur?cur+" "+x:x;if(ctx.measureText(t).width>max&&cur){lines.push(cur);cur=x}else cur=t});if(cur)lines.push(cur);return lines}
+function serial(n){var h=7;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%90000;return 10000+h}
 function draw(){
-  var W=1080,H=1350,name=$("nm").value.trim()||"اسم صاحبك",from=$("fr").value.trim(),note=$("note").value.trim()||T[sel][1];
+  var W=1080,H=1350,name=$("nm").value.trim()||"اسم صاحبك",from=$("fr").value.trim(),custom=$("ct").value.trim(),note=$("note").value.trim()||(custom?"لقب معتمد من الشلة بالإجماع":T[sel][1]),C=TH[th];
+  var tt=custom||T[sel][0];
   ctx.direction="rtl";ctx.textAlign="center";
-  var g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,"#fff7e6");g.addColorStop(1,"#fde8b3");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle="#b45309";ctx.lineWidth=14;ctx.strokeRect(40,40,W-80,H-80);
+  var g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,C.bg1);g.addColorStop(1,C.bg2);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle=C.bd;ctx.lineWidth=14;ctx.strokeRect(40,40,W-80,H-80);
   ctx.lineWidth=3;ctx.strokeRect(68,68,W-136,H-136);
+  ctx.fillStyle=C.bd;[[68,68],[W-68,68],[68,H-68],[W-68,H-68]].forEach(function(p){ctx.beginPath();ctx.arc(p[0],p[1],14,0,Math.PI*2);ctx.fill()});
   var F="system-ui,-apple-system,'Segoe UI',Tahoma,Arial,sans-serif";
-  ctx.fillStyle="#92400e";ctx.font="bold 92px "+F;ctx.fillText("شهادة تقدير",W/2,250);
-  ctx.font="52px "+F;ctx.fillStyle="#a16207";ctx.fillText("تُمنح بكل فخر وبدون أي مراجعة إلى",W/2,360);
-  ctx.fillStyle="#3b2a0a";var fs=130;ctx.font="bold "+fs+"px "+F;while(ctx.measureText(name).width>W-220&&fs>50){fs-=6;ctx.font="bold "+fs+"px "+F}
+  ctx.fillStyle=C.h;ctx.font="bold 92px "+F;ctx.fillText("شهادة تقدير",W/2,250);
+  ctx.font="52px "+F;ctx.fillStyle=C.sub;ctx.fillText("تُمنح بكل فخر وبدون أي مراجعة إلى",W/2,360);
+  ctx.fillStyle=C.txt;var fs=130;ctx.font="bold "+fs+"px "+F;while(ctx.measureText(name).width>W-220&&fs>50){fs-=6;ctx.font="bold "+fs+"px "+F}
   ctx.fillText(name,W/2,540);
-  ctx.strokeStyle="#d97706";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(220,585);ctx.lineTo(W-220,585);ctx.stroke();
-  ctx.font="52px "+F;ctx.fillStyle="#a16207";ctx.fillText("وذلك لحصوله على لقب",W/2,690);
-  ctx.fillStyle="#b45309";var ts=104,tt=T[sel][0];ctx.font="bold "+ts+"px "+F;while(ctx.measureText(tt).width>W-200&&ts>50){ts-=6;ctx.font="bold "+ts+"px "+F}
+  ctx.strokeStyle=C.acc;ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(220,585);ctx.lineTo(W-220,585);ctx.stroke();
+  ctx.font="52px "+F;ctx.fillStyle=C.sub;ctx.fillText("وذلك لحصوله على لقب",W/2,690);
+  ctx.fillStyle=C.ti;var ts=104;ctx.font="bold "+ts+"px "+F;while(ctx.measureText(tt).width>W-200&&ts>50){ts-=6;ctx.font="bold "+ts+"px "+F}
   ctx.fillText(tt,W/2,820);
-  ctx.fillStyle="#3b2a0a";ctx.font="46px "+F;var ls=wrap(note,W-260),y=930;ls.slice(0,3).forEach(function(l){ctx.fillText(l,W/2,y);y+=70});
-  // seal
-  ctx.fillStyle="#d97706";ctx.beginPath();ctx.arc(W/2,1125,80,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=6;ctx.beginPath();ctx.arc(W/2,1125,64,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle=C.txt;ctx.font="46px "+F;var ls=wrap(note,W-260),y=930;ls.slice(0,3).forEach(function(l){ctx.fillText(l,W/2,y);y+=70});
+  ctx.fillStyle=C.acc;ctx.beginPath();ctx.arc(W/2,1125,80,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=6;ctx.beginPath();ctx.arc(W/2,1125,64,0,Math.PI*2);ctx.stroke();
   ctx.fillStyle="#fff";ctx.font="bold 30px "+F;ctx.fillText("معتمد",W/2,1136);
-  if(from){ctx.fillStyle="#78350f";ctx.font="44px "+F;ctx.fillText("من: "+from,W/2,1235)}
-  ctx.fillStyle="#c58a3a";ctx.font="26px "+F;ctx.fillText("mohamedelsayed16399-bit.github.io/shahada",W/2,1282);
+  ctx.fillStyle=C.sub;ctx.font="30px "+F;var d=new Date();ctx.textAlign="right";ctx.fillText("بتاريخ "+d.toLocaleDateString("ar-EG"),W-120,1135);ctx.textAlign="left";ctx.fillText("رقم "+serial(name+tt),120,1135);ctx.textAlign="center";
+  if(from){ctx.fillStyle=C.h;ctx.font="44px "+F;ctx.fillText("من: "+from,W/2,1235)}
+  ctx.fillStyle=C.sub;ctx.globalAlpha=.8;ctx.font="26px "+F;ctx.fillText("mohamedelsayed16399-bit.github.io/shahada",W/2,1282);ctx.globalAlpha=1;
 }
-["nm","fr","note"].forEach(function(i){$(i).oninput=draw});
+["nm","fr","note","ct"].forEach(function(i){$(i).oninput=draw});
 function blob(cb){cv.toBlob(cb,"image/png")}
 $("dl").onclick=function(){blob(function(b){var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="shahada.png";document.body.appendChild(a);a.click();a.remove();toast("اتنزلت ✔")})};
 $("share").onclick=function(){blob(function(b){
@@ -102,7 +128,15 @@ $("share").onclick=function(){blob(function(b){
   if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],text:"عملتلك شهادة 😂 اعمل واحدة لصحابك: "+location.href.split("#")[0]}).catch(function(){})}
   else{$("dl").click();window.open("https://wa.me/?text="+encodeURIComponent("عملتلك شهادة 😂 اعمل واحدة لصحابك: "+location.href.split("#")[0]),"_blank")}
 })};
-$("rnd").onclick=function(){sel=Math.floor(Math.random()*T.length);[].forEach.call(box.children,function(c,k){c.classList.toggle("on",k===sel)});draw()};
+$("rnd").onclick=function(){$("ct").value="";sel=Math.floor(Math.random()*T.length);[].forEach.call(box.children,function(c,k){c.classList.toggle("on",k===sel)});draw()};
+function mkLink(){var p=[];var n=$("nm").value.trim(),c=$("ct").value.trim(),f=$("fr").value.trim(),no=$("note").value.trim();if(n)p.push("n="+encodeURIComponent(n));if(c)p.push("c="+encodeURIComponent(c));else p.push("t="+sel);if(f)p.push("f="+encodeURIComponent(f));if(no)p.push("m="+encodeURIComponent(no));p.push("s="+th);return location.href.split("#")[0]+"#"+p.join("&")}
+$("lk").onclick=function(){var l=mkLink(),t="عملتلك شهادة 😂 افتح اللينك: "+l;if(navigator.share){navigator.share({text:t}).catch(function(){})}else if(navigator.clipboard){navigator.clipboard.writeText(l).then(function(){toast("اتنسخ اللينك ✔")})}else window.open("https://wa.me/?text="+encodeURIComponent(t))};
+function fromHash(){var h=location.hash.slice(1);if(!h)return;var o={};h.split("&").forEach(function(x){var k=x.split("=");try{o[k[0]]=decodeURIComponent(k[1]||"")}catch(e){}});
+  if(o.n)$("nm").value=o.n.slice(0,24);if(o.f)$("fr").value=o.f.slice(0,24);if(o.m)$("note").value=o.m.slice(0,60);if(o.c)$("ct").value=o.c.slice(0,30);
+  if(o.t!==undefined&&+o.t>=0&&+o.t<T.length){sel=+o.t;[].forEach.call(box.children,function(c,k){c.classList.toggle("on",k===sel)})}
+  if(o.s!==undefined&&+o.s>=0&&+o.s<TH.length){th=+o.s;[].forEach.call(tbox.children,function(c,k){c.classList.toggle("on",k===th)})}}
+window.addEventListener("hashchange",function(){fromHash();draw()});
+fromHash();
 draw();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(draw);
 if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){navigator.serviceWorker.register("sw.js").catch(function(){})}
