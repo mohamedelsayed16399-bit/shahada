@@ -171,7 +171,7 @@ KD.forEach(function(t,i){var b=document.createElement("button");b.className="chi
 $("ph").onchange=function(){var f=this.files&&this.files[0];if(!f){PH=null;draw();return}var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){PH=im;draw();toast("اتضافت الصورة ✔")};im.onerror=function(){toast("الصورة مش مقروءة")};im.src=r.result};r.readAsDataURL(f)};
 function wrap(text,max){var w=text.split(" "),lines=[],cur="";w.forEach(function(x){var t=cur?cur+" "+x:x;if(ctx.measureText(t).width>max&&cur){lines.push(cur);cur=x}else cur=t});if(cur)lines.push(cur);return lines}
 function serial(n){var h=7;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%90000;return 10000+h}
-function draw(){
+function draw(){try{savePrefs()}catch(e){}
   var W=1080,H=SZ[sz][1],name=$("nm").value.trim()||"اسم صاحبك",from=$("fr").value.trim(),custom=$("ct").value.trim(),note=$("note").value.trim()||(custom?"لقب معتمد من الشلة بالإجماع":T[sel][1]),C=TH[th];
   var tt=custom||T[sel][0];
   cv.height=H;ctx.direction="rtl";ctx.textAlign="center";
@@ -229,6 +229,12 @@ function fromHash(){var h=location.hash.slice(1);if(!h)return;var o={};h.split("
   if(o.h)$("ch").value=o.h.slice(0,22);
   if(o.s!==undefined&&+o.s>=0&&+o.s<TH.length){th=+o.s;[].forEach.call(tbox.children,function(c,k){c.classList.toggle("on",k===th)})}}
 window.addEventListener("hashchange",function(){fromHash();draw()});
+var PK_="shahada_prefs";
+function savePrefs(){try{localStorage.setItem(PK_,JSON.stringify({s:th,y:fo,b:bs,p:pt,e:se,z:sz,f:$("fr").value}))}catch(e){}}
+function loadPrefs(){if(location.hash)return;try{var o=JSON.parse(localStorage.getItem(PK_)||"null");if(!o)return;
+  if(o.s>=0&&o.s<TH.length){th=o.s;setOn(tbox,th)}if(o.y>=0&&o.y<FN.length){fo=o.y;setOn(fbox,fo)}if(o.b>=0&&o.b<BS.length){bs=o.b;setOn(bx,bs)}if(o.p>=0&&o.p<PT.length){pt=o.p;setOn(px,pt)}
+  if(o.e>=0&&o.e<SE.length){se=o.e;setOn(sbox,se)}if(o.z>=0&&o.z<SZ.length){sz=o.z;setOn(zbox,sz)}if(o.f)$("fr").value=String(o.f).slice(0,24)}catch(e){}}
+loadPrefs();
 fromHash();
 draw();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(draw);
