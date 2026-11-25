@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>شهادة تقدير ظريفة | اعمل شهادة لصاحبك</title>
+<meta name="description" content="اعمل شهادة تقدير مضحكة باسم صاحبك (ملك التأخير، دكتور الأكل، وغيرها) ونزّلها صورة وابعتها على واتساب.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="شهادة تقدير ظريفة 🏅 اعمل لصاحبك واحدة">
+<meta property="og:description" content="اكتب اسم صاحبك، اختار اللقب، ونزّل الشهادة صورة وابعتها على واتساب.">
+<meta property="og:locale" content="ar_EG">
+<meta name="theme-color" content="#b45309">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;background:#fff7e6;color:#3b2a0a;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.wrap{max-width:520px;margin:0 auto;padding:16px 14px 40px}
+h1{margin:6px 0 2px;text-align:center;font-size:26px;color:#92400e}
+.sub{text-align:center;color:#a16207;margin:0 0 14px}
+label{display:block;font-weight:700;margin:14px 0 6px}
+input,select{width:100%;font:inherit;font-size:17px;padding:12px;border:2px solid #f3d9a4;border-radius:12px;background:#fff;outline:none}
+input:focus,select:focus{border-color:#d97706}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid #f3d9a4;background:#fff;border-radius:20px;padding:8px 12px;font:inherit;font-size:15px;cursor:pointer}
+.chip.on{background:#d97706;border-color:#d97706;color:#fff}
+canvas{width:100%;height:auto;border-radius:12px;box-shadow:0 8px 24px rgba(120,53,15,.3);margin-top:16px;background:#fff}
+button.b{display:block;width:100%;margin-top:10px;padding:14px;font:inherit;font-size:18px;font-weight:700;border:0;border-radius:14px;background:#d97706;color:#fff;cursor:pointer}
+button.b.g{background:#16a34a}
+button.b.s{background:#fde68a;color:#78350f}
+.foot{text-align:center;color:#a16207;font-size:13px;margin-top:22px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:20px;opacity:0;transition:.3s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🏅 شهادة تقدير ظريفة</h1>
+<p class="sub">اعمل شهادة لصاحبك وابعتها صورة على واتساب</p>
+<label for="nm">اسم صاحب الشهادة</label>
+<input id="nm" maxlength="24" placeholder="مثلاً: أحمد" autocomplete="off">
+<label>اللقب</label>
+<div class="chips" id="titles"></div>
+<label for="fr">من (اسمك، اختياري)</label>
+<input id="fr" maxlength="24" placeholder="اسمك" autocomplete="off">
+<label for="note">كلمة على الشهادة (اختياري)</label>
+<input id="note" maxlength="60" placeholder="سيبه فاضي وهنكتب جملة ظريفة">
+<canvas id="cv" width="1080" height="1350"></canvas>
+<button class="b g" id="share">ابعت الشهادة 📤</button>
+<button class="b" id="dl">نزّل الصورة</button>
+<button class="b s" id="rnd">لقب عشوائي 🎲</button>
+<div class="foot">الصورة بتتعمل على موبايلك ومفيش حاجة بتتبعت لأي سيرفر</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+"use strict";
+var T=[
+["ملك التأخير","الوحيد اللي بيوصل بعد ما الكل يمشي، وبيقول «أنا في الطريق»"],
+["دكتور الأكل","خبير عالمي في اختيار المطعم وأول من يقول «أنا مش جعان» ويخلص الطبق"],
+["أحسن صاحب في الدنيا","بيسند وقت الشدة وبيضحك حتى لو النكتة مش حلوة"],
+["وزير الواتساب","بيرد بعد 3 أيام لكن بيبعت ستيكر يعوّض"],
+["خبير الميمز","يعرف الميم قبل ما ينزل ويبعته في الجروب الغلط"],
+["عبقري الأجرة","بيحسب فاتورة المطعم لآخر جنيه وبيطلع هو اللي دفع أقل"],
+["نجم الشلة","لو مش موجود الخروجة بتبقى مملة"],
+["سلطان النوم","بينام في أي مكان وأي وقت، وبيصحى يسأل «احنا فين؟»"],
+["مدير الجروب","بيصدر القرارات ومحدش بيسمعها"],
+["قاهر المذاكرة","بيذاكر ليلة الامتحان وبينجح بإعجاز"]
+];
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),sel=0;
+function $(i){return document.getElementById(i)}
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(function(){e.classList.remove("on")},1800)}
+var box=$("titles");
+T.forEach(function(t,i){var b=document.createElement("button");b.className="chip"+(i===0?" on":"");b.textContent=t[0];b.onclick=function(){sel=i;[].forEach.call(box.children,function(c,k){c.classList.toggle("on",k===i)});draw()};box.appendChild(b)});
+function wrap(text,max){var w=text.split(" "),lines=[],cur="";w.forEach(function(x){var t=cur?cur+" "+x:x;if(ctx.measureText(t).width>max&&cur){lines.push(cur);cur=x}else cur=t});if(cur)lines.push(cur);return lines}
+function draw(){
+  var W=1080,H=1350,name=$("nm").value.trim()||"اسم صاحبك",from=$("fr").value.trim(),note=$("note").value.trim()||T[sel][1];
+  ctx.direction="rtl";ctx.textAlign="center";
+  var g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,"#fff7e6");g.addColorStop(1,"#fde8b3");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle="#b45309";ctx.lineWidth=14;ctx.strokeRect(40,40,W-80,H-80);
+  ctx.lineWidth=3;ctx.strokeRect(68,68,W-136,H-136);
+  var F="system-ui,-apple-system,'Segoe UI',Tahoma,Arial,sans-serif";
+  ctx.fillStyle="#92400e";ctx.font="bold 92px "+F;ctx.fillText("شهادة تقدير",W/2,250);
+  ctx.font="52px "+F;ctx.fillStyle="#a16207";ctx.fillText("تُمنح بكل فخر وبدون أي مراجعة إلى",W/2,360);
+  ctx.fillStyle="#3b2a0a";var fs=130;ctx.font="bold "+fs+"px "+F;while(ctx.measureText(name).width>W-220&&fs>50){fs-=6;ctx.font="bold "+fs+"px "+F}
+  ctx.fillText(name,W/2,540);
+  ctx.strokeStyle="#d97706";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(220,585);ctx.lineTo(W-220,585);ctx.stroke();
+  ctx.font="52px "+F;ctx.fillStyle="#a16207";ctx.fillText("وذلك لحصوله على لقب",W/2,690);
+  ctx.fillStyle="#b45309";var ts=104,tt=T[sel][0];ctx.font="bold "+ts+"px "+F;while(ctx.measureText(tt).width>W-200&&ts>50){ts-=6;ctx.font="bold "+ts+"px "+F}
+  ctx.fillText(tt,W/2,820);
+  ctx.fillStyle="#3b2a0a";ctx.font="46px "+F;var ls=wrap(note,W-260),y=930;ls.slice(0,3).forEach(function(l){ctx.fillText(l,W/2,y);y+=70});
+  // seal
+  ctx.fillStyle="#d97706";ctx.beginPath();ctx.arc(W/2,1125,80,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=6;ctx.beginPath();ctx.arc(W/2,1125,64,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle="#fff";ctx.font="bold 30px "+F;ctx.fillText("معتمد",W/2,1136);
+  if(from){ctx.fillStyle="#78350f";ctx.font="44px "+F;ctx.fillText("من: "+from,W/2,1235)}
+  ctx.fillStyle="#c58a3a";ctx.font="26px "+F;ctx.fillText("mohamedelsayed16399-bit.github.io/shahada",W/2,1282);
+}
+["nm","fr","note"].forEach(function(i){$(i).oninput=draw});
+function blob(cb){cv.toBlob(cb,"image/png")}
+$("dl").onclick=function(){blob(function(b){var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="shahada.png";document.body.appendChild(a);a.click();a.remove();toast("اتنزلت ✔")})};
+$("share").onclick=function(){blob(function(b){
+  var f=new File([b],"shahada.png",{type:"image/png"});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],text:"عملتلك شهادة 😂 اعمل واحدة لصحابك: "+location.href.split("#")[0]}).catch(function(){})}
+  else{$("dl").click();window.open("https://wa.me/?text="+encodeURIComponent("عملتلك شهادة 😂 اعمل واحدة لصحابك: "+location.href.split("#")[0]),"_blank")}
+})};
+$("rnd").onclick=function(){sel=Math.floor(Math.random()*T.length);[].forEach.call(box.children,function(c,k){c.classList.toggle("on",k===sel)});draw()};
+draw();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(draw);
+if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){navigator.serviceWorker.register("sw.js").catch(function(){})}
+</script>
+</body>
+</html>
