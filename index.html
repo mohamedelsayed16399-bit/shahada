@@ -53,6 +53,7 @@ button.b.s{background:#fde68a;color:#78350f}
 <div class="chips" id="seals"></div>
 <h2>عنوان مخصص (اختياري)</h2><input id="ch" maxlength="22" placeholder="مثلاً: شهادة أسطورة العيلة">
 <h2>التاريخ (اختياري)</h2><input id="dt" maxlength="22" placeholder="سيبه فاضي ونكتب تاريخ النهارده">
+<h2>الإمضاء (اختياري)</h2><input id="sg" maxlength="16" placeholder="مثلاً: المدير العام">
 <label style="display:flex;gap:8px;align-items:center;margin:10px 0"><input type="checkbox" id="nsr" style="width:20px;height:20px"> بدون رقم الشهادة</label>
 <h2>شكل الإطار</h2><div class="chips" id="bsx"></div>
 <h2>الخلفية</h2><div class="chips" id="ptx"></div>
@@ -155,7 +156,7 @@ var TH=[
 ],th=0;
 var KD=[["شهادة تقدير","تُمنح بكل فخر وبدون أي مراجعة إلى","وذلك لحصوله على لقب"],["شهادة عيد ميلاد","بمناسبة عيد ميلاده السعيد، تُمنح إلى","وذلك بعد نجاحه في إكمال سنة جديدة بلقب"],["شهادة نجاح","نهنئ من القلب ونمنح بكل فخر إلى","وذلك لنجاحه الباهر وحصوله على لقب"],["شهادة شكر","نتقدم بخالص الشكر والعرفان إلى","وذلك لجهوده الجبارة وحصوله على لقب"],["شهادة تخرج","بعد سنين من السهر والمعاناة، يُهنَّأ","وذلك لتخرجه أخيراً وحصوله على لقب"],["شهادة صداقة","تقديراً لوقفته الجدعة، تُمنح إلى","وذلك لأنه صاحب بجد وحاصل على لقب"],["شهادة صبر","على صبره الجميل علينا، تُمنح إلى","وذلك لتحمله ما لا يُحتمل بلقب"],["شهادة مجاملة","بدون مجاملة (والله)، تُمنح إلى","وذلك لأنه يستحقها فعلاً بلقب"],["شهادة رمضان","بمناسبة الشهر الكريم، تُمنح إلى","وذلك لصيامه وحصوله على لقب"],["شهادة موظف الشهر","لتميزه في الشغل (وفي الشاي)، تُمنح إلى","وذلك لتميزه وحصوله على لقب"],["شهادة اعتذار","نعتذر بكل صدق، ونمنح إلى","وذلك تعويضاً عن موقف بلقب"],["شهادة شجاعة","لشجاعته في وقت الشدة، تُمنح إلى","وذلك لأنه واجه الموقف بلقب"],["شهادة مبروك","ألف مبروك، ونمنح بكل سعادة إلى","وذلك بمناسبة الفرحة بلقب"],["شهادة زمالة","تقديراً للزمالة الجميلة، تُمنح إلى","وذلك لأنه أحسن زميل بلقب"],["شهادة براءة","بعد التحقيق الدقيق، تثبت براءة","وذلك لأنه بريء بلقب"],["شهادة سهر","بعد ليالي السهر الطويلة، تُمنح إلى","وذلك لأنه ما نامش بلقب"]],kd=0,PH=null;
 var FN=[["حديث","system-ui,-apple-system,'Segoe UI',Tahoma,Arial,sans-serif"],["كلاسيك","'Amiri','Traditional Arabic','Times New Roman',Georgia,serif"]],fo=0,BL=[];
-var BS=["كلاسيك","منقّط","مزخرف"],bs=0,PT=["سادة","نقاط","خطوط","نجوم"],pt=0;
+var BS=["كلاسيك","منقّط","مزخرف"],bs=0,PT=["سادة","نقاط","خطوط","نجوم","دوائر","شبكة"],pt=0;
 var SE=["معتمد","🏆","👑","😂","🔥","⭐","🎓","💎","🌹","🚀","🍕","⚡","🌙","🎂","🦁","👏","🥇"],se=0,SZ=[["بوست",1350],["ستوري",1920]],sz=0;
 var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),sel=0;
 function $(i){return document.getElementById(i)}
@@ -200,6 +201,8 @@ function draw(){try{savePrefs()}catch(e){}
   if(pt===1){for(var yy=100;yy<H-90;yy+=46)for(var xx=100+((yy/46)%2)*23;xx<W-90;xx+=46){ctx.beginPath();ctx.arc(xx,yy,4,0,7);ctx.fill()}}
   else if(pt===2){ctx.lineWidth=3;for(var xx=-H;xx<W;xx+=40){ctx.beginPath();ctx.moveTo(xx,H);ctx.lineTo(xx+H,0);ctx.stroke()}}
   else if(pt===3){ctx.font="30px sans-serif";ctx.textAlign="center";for(var yy=110;yy<H-90;yy+=90)for(var xx=110+((yy/90)%2)*45;xx<W-90;xx+=90)ctx.fillText("★",xx,yy)}
+  else if(pt===4){ctx.lineWidth=3;for(var yy=120;yy<H;yy+=120)for(var xx=120;xx<W;xx+=120){ctx.beginPath();ctx.arc(xx,yy,34,0,Math.PI*2);ctx.stroke()}}
+  else if(pt===5){ctx.lineWidth=2;for(var xx=0;xx<W;xx+=54){ctx.beginPath();ctx.moveTo(xx,0);ctx.lineTo(xx,H);ctx.stroke()}for(var yy=0;yy<H;yy+=54){ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(W,yy);ctx.stroke()}}
   ctx.restore();ctx.textAlign="center";
   ctx.strokeStyle=C.bd;ctx.lineWidth=14;
   if(bs===1){ctx.setLineDash([26,16])}
@@ -223,10 +226,11 @@ function draw(){try{savePrefs()}catch(e){}
   ctx.fillStyle=C.acc;ctx.beginPath();ctx.arc(W/2,1125,80,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=6;ctx.beginPath();ctx.arc(W/2,1125,64,0,Math.PI*2);ctx.stroke();
   ctx.fillStyle="#fff";if(se===0){ctx.font="bold 30px "+F;ctx.fillText("معتمد",W/2,1136)}else{ctx.font="72px "+F;ctx.fillText(SE[se],W/2,1150)}
   ctx.fillStyle=C.sub;ctx.font="30px "+F;var d=new Date(),dtx=$("dt").value.trim();ctx.textAlign="right";ctx.fillText(dtx?("بتاريخ "+dtx):("بتاريخ "+d.toLocaleDateString("ar-EG")),W-120,1135);ctx.textAlign="left";if(!$("nsr").checked)ctx.fillText("رقم "+serial(name+tt),120,1135);ctx.textAlign="center";
+  var sgv=$("sg").value.trim();if(sgv){ctx.fillStyle=C.h;ctx.font="italic bold 40px "+F;var sw=40;while(ctx.measureText(sgv).width>300&&sw>20){sw-=2;ctx.font="italic bold "+sw+"px "+F}ctx.fillText(sgv,250,1060);ctx.strokeStyle=C.sub;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(110,1075);ctx.lineTo(390,1075);ctx.stroke()}
   if(from){ctx.fillStyle=C.h;ctx.font="44px "+F;ctx.fillText("من: "+from,W/2,1235)}
   ctx.fillStyle=C.sub;ctx.globalAlpha=.8;ctx.font="26px "+F;ctx.fillText("mohamedelsayed16399-bit.github.io/shahada",W/2,1282);ctx.globalAlpha=1;ctx.restore();
 }
-["nm","fr","note","ct","ch","dt"].forEach(function(i){$(i).oninput=draw});$("nsr").onchange=draw;
+["nm","fr","note","ct","ch","dt","sg"].forEach(function(i){$(i).oninput=draw});$("nsr").onchange=draw;
 function blob(cb){cv.toBlob(cb,"image/png")}
 $("dl").onclick=function(){blob(function(b){var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="shahada.png";document.body.appendChild(a);a.click();a.remove();toast("اتنزلت ✔")})};
 $("share").onclick=function(){blob(function(b){
@@ -235,7 +239,7 @@ $("share").onclick=function(){blob(function(b){
   else{$("dl").click();window.open("https://wa.me/?text="+encodeURIComponent("عملتلك شهادة 😂 اعمل واحدة لصحابك: "+location.href.split("#")[0]),"_blank")}
 })};
 $("rnd").onclick=function(){$("ct").value="";sel=Math.floor(Math.random()*T.length);[].forEach.call(box.children,function(c,k){c.classList.toggle("on",k===sel)});draw()};
-function mkLink(){var p=[];var n=$("nm").value.trim(),c=$("ct").value.trim(),f=$("fr").value.trim(),no=$("note").value.trim();if(n)p.push("n="+encodeURIComponent(n));if(c)p.push("c="+encodeURIComponent(c));else p.push("t="+sel);if(f)p.push("f="+encodeURIComponent(f));if(no)p.push("m="+encodeURIComponent(no));p.push("s="+th);if(kd)p.push("k="+kd);if(se)p.push("e="+se);if(sz)p.push("z="+sz);if(fo)p.push("y="+fo);var dd=$("dt").value.trim();if(dd)p.push("d="+encodeURIComponent(dd));if($("nsr").checked)p.push("x=1");var hh=$("ch").value.trim();if(hh)p.push("h="+encodeURIComponent(hh));if(bs)p.push("b="+bs);if(pt)p.push("p="+pt);return location.href.split("#")[0]+"#"+p.join("&")}
+function mkLink(){var p=[];var n=$("nm").value.trim(),c=$("ct").value.trim(),f=$("fr").value.trim(),no=$("note").value.trim();if(n)p.push("n="+encodeURIComponent(n));if(c)p.push("c="+encodeURIComponent(c));else p.push("t="+sel);if(f)p.push("f="+encodeURIComponent(f));if(no)p.push("m="+encodeURIComponent(no));p.push("s="+th);if(kd)p.push("k="+kd);if(se)p.push("e="+se);if(sz)p.push("z="+sz);if(fo)p.push("y="+fo);var dd=$("dt").value.trim();if(dd)p.push("d="+encodeURIComponent(dd));if($("nsr").checked)p.push("x=1");var gg=$("sg").value.trim();if(gg)p.push("g="+encodeURIComponent(gg));var hh=$("ch").value.trim();if(hh)p.push("h="+encodeURIComponent(hh));if(bs)p.push("b="+bs);if(pt)p.push("p="+pt);return location.href.split("#")[0]+"#"+p.join("&")}
 $("lk").onclick=function(){var l=mkLink(),t="عملتلك شهادة 😂 افتح اللينك: "+l;if(navigator.share){navigator.share({text:t}).catch(function(){})}else if(navigator.clipboard){navigator.clipboard.writeText(l).then(function(){toast("اتنسخ اللينك ✔")})}else window.open("https://wa.me/?text="+encodeURIComponent(t))};
 function fromHash(){var h=location.hash.slice(1);if(!h)return;var o={};h.split("&").forEach(function(x){var k=x.split("=");try{o[k[0]]=decodeURIComponent(k[1]||"")}catch(e){}});
   if(o.n)$("nm").value=o.n.slice(0,24);if(o.f)$("fr").value=o.f.slice(0,24);if(o.m)$("note").value=o.m.slice(0,60);if(o.c)$("ct").value=o.c.slice(0,30);
@@ -246,7 +250,7 @@ function fromHash(){var h=location.hash.slice(1);if(!h)return;var o={};h.split("
   if(o.y!==undefined&&+o.y>=0&&+o.y<FN.length){fo=+o.y;setOn(fbox,fo)}
   if(o.b!==undefined&&+o.b>=0&&+o.b<BS.length){bs=+o.b;setOn(bx,bs)}
   if(o.p!==undefined&&+o.p>=0&&+o.p<PT.length){pt=+o.p;setOn(px,pt)}
-  if(o.h)$("ch").value=o.h.slice(0,22);if(o.d)$("dt").value=o.d.slice(0,22);if(o.x==="1")$("nsr").checked=true;
+  if(o.h)$("ch").value=o.h.slice(0,22);if(o.d)$("dt").value=o.d.slice(0,22);if(o.x==="1")$("nsr").checked=true;if(o.g)$("sg").value=o.g.slice(0,16);
   if(o.s!==undefined&&+o.s>=0&&+o.s<TH.length){th=+o.s;[].forEach.call(tbox.children,function(c,k){c.classList.toggle("on",k===th)})}}
 window.addEventListener("hashchange",function(){fromHash();draw()});
 var PK_="shahada_prefs";
